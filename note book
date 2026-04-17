@@ -1,0 +1,56 @@
+Water Consumption Pattern Analyzer
+
+Includes hourly peak analysis.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_excel('data.xlxs')
+df.head()
+
+Data Cleaning
+
+df.dropna(inplace=True)
+df['year'] = pd.to_datetime(df['year'])
+
+df['month'] = df['year'].dt.month
+df['Hour'] = df['year'].dt.hour
+
+df.head()
+
+Monthly Analysis
+
+monthly_usage = df.groupby('Month')['Consumption'].sum()
+monthly_usage.plot(marker='o', title='Monthly Water Consumption')
+plt.show()
+
+Area-wise Analysis
+
+area_usage = df.groupby('zone')['avg_daily_usage_L'].sum()
+area_usage.plot(kind='bar', title='Water Consumption by Area')
+plt.xticks(rotation=45)
+plt.show()
+
+Hourly Peak Analysis
+
+hourly_usage = df.groupby('Hour')['Consumption'].mean()
+
+hourly_usage.plot(kind='bar', title='Average Hourly Water Consumption')
+plt.xlabel('Hour of Day')
+plt.ylabel('Average Consumption')
+plt.show()
+
+peak_hour = hourly_usage.idxmax()
+print("Peak usage hour:", peak_hour)
+
+Heatmap
+
+pivot = df.pivot_table(values='avg_daily_usage_L', columns='month')
+
+sns.heatmap(pivot, annot=True)
+plt.title('Heatmap of Water Consumption')
+plt.show()
+
+
+
